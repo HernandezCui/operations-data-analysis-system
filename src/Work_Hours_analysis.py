@@ -1,36 +1,65 @@
-# Kyle Marlia-Conner
-# Steve Stylin
-# Ean Masoner
-# Cuitlahuac Hernandez
-# Mirajo Tesora
-# Milestone # 1, 2, 3, 4
-
+import os
 
 import mysql.connector
 import pandas as pd
+from dotenv import load_dotenv
+from mysql.connector import Error
+
+load_dotenv()
 
 
-# MySQL connection configuration
-config = {
-    'user': 'root',
-    'password': 'Bellevue2021',  
-    'host': 'localhost',
-    'database': 'bacchus_winery'
-}
+def create_connection():
+    """Create a connection to the Bacchus Winery database."""
+    try:
+        return mysql.connector.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database="bacchus_winery",
+        )
 
-# Connect to MySQL server
-connection = mysql.connector.connect(**config)
-query = """
-SELECT FirstName, LastName, WorkHours
-FROM Employee;
-"""
+    except Error as error:
+        print(f"Database connection failed: {error}")
+        return None
 
-# Fetch data
-df = pd.read_sql(query, connection)
 
-# Display the report
-print("Employee Work Hours Report")
-print(df)
+def generate_work_hours_report():
+    """Retrieve and display employee work-hour data."""
+    connection = create_connection()
 
-# Close the connection
-connection.close()
+    if connection is None:
+        return
+
+    query = """
+    SELECT
+        EmployeeID,
+        FirstName,
+        LastName,
+        Role,
+        WorkHours
+    FROM Employee
+    ORDER BY WorkHours DESC;
+    """
+
+    try:
+        dataframe = pd.read_sql(query, connection)
+
+        print("\n========== Employee Work Hours Report ==========\n")
+        print(dataframe.to_string(index=False))
+
+        average_hours = dataframe["WorkHours"].mean()
+        highest_hours = dataframe["WorkHours"].max()
+
+        print(f"\nAverage work hours: {average_hours:.1f}")
+        print(f"Highest recorded work hours: {highest_hours}")
+
+    except Exception as error:
+        print(f"Unable to generate work-hours report: {error}")
+
+    finally:
+        if connection.is_connected():
+            connection.close()
+
+
+if __name__ == "__main__":
+    generate_work_hours_report()
