@@ -1,34 +1,40 @@
-from database_connection import initialize_database
-from inventory_analysis import generate_inventory_report
-from work_hours_analysis import generate_work_hours_report
-from sales_analysis import generate_sales_report
+from src.database.database_connection import initialize_database
+from src.reports.inventory_analysis import generate_inventory_report
+from src.reports.sales_analysis import generate_sales_report
+from src.reports.work_hours_analysis import generate_work_hours_report
 
 
 def print_header():
+    """Display the application heading."""
+
     print("=" * 60)
-    print("      Bacchus Winery Operations Analysis System")
+    print("      Operations Data Analysis System")
     print("=" * 60)
 
 
 def print_footer():
-    print("=" * 60)
+    """Display the application completion message."""
+
+    print("\n" + "=" * 60)
     print("Analysis Complete")
     print("=" * 60)
 
 
 def main():
+    """Initialize the database and generate all reports."""
+
     print_header()
 
-    print("\nInitializing database...\n")
+    print("\nInitializing database...")
     initialize_database()
 
-    print("\nGenerating Inventory Report...\n")
+    print("\nGenerating inventory report...")
     generate_inventory_report()
 
-    print("\nGenerating Employee Work Hours Report...\n")
+    print("\nGenerating employee work-hours report...")
     generate_work_hours_report()
 
-    print("\nGenerating Sales Performance Report...\n")
+    print("\nGenerating sales performance report...")
     generate_sales_report()
 
     print_footer()

@@ -1,27 +1,10 @@
 import os
 
 import matplotlib.pyplot as plt
-import mysql.connector
 import pandas as pd
-from dotenv import load_dotenv
 from mysql.connector import Error
 
-load_dotenv()
-
-
-def create_connection():
-    """Create a connection to the Bacchus Winery database."""
-    try:
-        return mysql.connector.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database="bacchus_winery",
-        )
-
-    except Error as error:
-        print(f"Database connection failed: {error}")
-        return None
+from src.database.db import create_connection
 
 
 def generate_sales_report():
@@ -68,13 +51,15 @@ def generate_sales_report():
 
         os.makedirs("../images", exist_ok=True)
 
-        plt.savefig("../images/sales_performance_report.png")
+        chart_path = "../images/sales_performance_report.png"
+        plt.savefig(chart_path)
 
         plt.show()
+        plt.close()
 
-        print("\nChart saved to images/sales_performance_report.png")
+        print(f"\nChart saved to {chart_path}")
 
-    except Exception as error:
+    except Error as error:
         print(f"Unable to generate sales report: {error}")
 
     finally:

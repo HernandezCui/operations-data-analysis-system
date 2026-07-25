@@ -1,30 +1,12 @@
-import os
-
-import mysql.connector
 import pandas as pd
-from dotenv import load_dotenv
 from mysql.connector import Error
 
-load_dotenv()
-
-
-def create_connection():
-    """Create a connection to the Bacchus Winery database."""
-    try:
-        return mysql.connector.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database="bacchus_winery",
-        )
-
-    except Error as error:
-        print(f"Database connection failed: {error}")
-        return None
+from src.database.db import create_connection
 
 
 def generate_work_hours_report():
     """Retrieve and display employee work-hour data."""
+
     connection = create_connection()
 
     if connection is None:
@@ -53,7 +35,7 @@ def generate_work_hours_report():
         print(f"\nAverage work hours: {average_hours:.1f}")
         print(f"Highest recorded work hours: {highest_hours}")
 
-    except Exception as error:
+    except Error as error:
         print(f"Unable to generate work-hours report: {error}")
 
     finally:

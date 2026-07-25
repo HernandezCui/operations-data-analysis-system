@@ -22,8 +22,8 @@ def create_server_connection():
 
 def create_database(cursor):
     """Create the project database if it does not already exist."""
-    cursor.execute("CREATE DATABASE IF NOT EXISTS bacchus_winery")
-    cursor.execute("USE bacchus_winery")
+    cursor.execute("CREATE DATABASE IF NOT EXISTS operations_analytics")
+    cursor.execute("USE operations_analytics")
 
 
 def create_tables(cursor):
